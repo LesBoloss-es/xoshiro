@@ -1,0 +1,6 @@
+(library
+ (name xoshiro_bindings)
+ (implements xoshiro)
+ (public_name xoshiro.bindings)
+ (libraries
+  xoshiro.bindings.256++))

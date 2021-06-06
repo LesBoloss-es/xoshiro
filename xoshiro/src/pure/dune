@@ -1,0 +1,6 @@
+(library
+ (name xoshiro_pure)
+ (implements xoshiro)
+ (public_name xoshiro.pure)
+ (libraries
+  xoshiro.pure.256++))

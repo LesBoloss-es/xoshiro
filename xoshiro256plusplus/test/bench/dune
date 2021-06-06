@@ -1,0 +1,3 @@
+(executable
+ (name run)
+ (libraries core_bench xoshiro.pure.256++ xoshiro.bindings.256++))
