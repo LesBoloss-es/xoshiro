@@ -1,5 +1,9 @@
 (library
  (name xoshiro256plusplus_bindings)
  (public_name xoshiro.bindings.256++)
- (foreign_stubs (language c) (names xoshiro256plusplus_bindings))
+ (foreign_stubs
+  (language c)
+  (names
+   xoshiro256plusplus_bindings
+   xoshiro256plusplus_bindings_stubs))
  (libraries make-random))

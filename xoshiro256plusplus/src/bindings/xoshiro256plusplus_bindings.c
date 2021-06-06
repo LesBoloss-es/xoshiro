@@ -1,9 +1,5 @@
 #include <stdint.h>
 
-#define CAML_NAME_SPACE
-#include <caml/mlvalues.h>
-#include <caml/alloc.h>
-
 static inline uint64_t rotl(const uint64_t x, int k) {
 	return (x << k) | (x >> (64 - k));
 }
@@ -41,8 +37,4 @@ int bits () {
     second = result & u30mask;
     return (result >> 34);
   }
-}
-
-CAMLprim value caml_bits () {
-  return Val_long(bits ());
 }
