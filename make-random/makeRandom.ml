@@ -193,8 +193,8 @@ module Full (B : FULLBITS) : FULL = struct
 
     let rawfloat s =
       let scale = 1073741824.0  (* 2^30 *)
-      and r1 = Stdlib.float (bits s)
-      and r2 = Stdlib.float (bits s)
+      and r1 = float_of_int (bits s) (* note: in original file, Stdlib.float is used *)
+      and r2 = float_of_int (bits s) (* note: in original file, Stdlib.float is used *)
       in (r1 /. scale +. r2) /. scale
 
     let float s bound = rawfloat s *. bound
