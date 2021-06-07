@@ -25,14 +25,17 @@ let print_header test_name =
   Format.printf "\n## %s [ %s ] %s ##@."
     (String.make left '=') test_name (String.make right '=')
 
+let run_test gen_to_test =
+  Core.Command.run @@ Core_bench.Bench.make_command (
+    List.map
+      (fun (name, (module Gen : GEN)) ->
+         Core_bench.Bench.Test.create ~name (gen_to_test (module Gen : GEN)))
+      generators
+  )
+
 let () =
   List.iter
     (fun (test_name, GTT gen_to_test) ->
        print_header test_name;
-       Core.Command.run
-         (Core_bench.Bench.make_command
-            (List.map
-               (fun (name, (module Gen : GEN)) ->
-                  Core_bench.Bench.Test.create ~name (gen_to_test (module Gen)))
-               generators)))
+       run_test gen_to_test)
     tests
