@@ -1,0 +1,5 @@
+(executable
+ (name run)
+ (libraries
+  core_bench make-random
+  xoshiro.pure.256++ xoshiro.bindings.256++))
