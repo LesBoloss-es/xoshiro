@@ -22,7 +22,10 @@ jobs:
           - 4.09.1
           - 4.10.2
           - 4.11.2
-          - 4.12.0
+        include:
+          - { os: ubuntu-latest,  ocaml-version: 4.12.0, deploy-doc: deploy-doc }
+          # - { os: macos-latest,   ocaml-version: 4.12.0 } ##FIXME: when TestU01 is fixed, run on macOS again
+          - { os: windows-latest, ocaml-version: 4.12.0 }
 
     runs-on: ${{ matrix.os }}
 
@@ -63,9 +66,11 @@ jobs:
 
       - name: Run Tests
         run: opam exec -- make test
+        if: runner.os != 'Windows'
 
       - name: Try Building Documentation
         run: opam exec -- make doc
+        if: runner.os != 'macOS'
 
       - name: Try Installing
         run: opam exec -- make install
@@ -75,6 +80,16 @@ jobs:
 
       - name: Try Cleaning
         run: opam exec -- make clean
+
+      - name: Generate Documentation for Auto-Deployment
+        run: opam exec -- make doc
+        if: github.event_name == 'push' && matrix.deploy-doc == 'deploy-doc'
+
+      - name: Auto-Deploy Documentation
+        uses: Niols/deploy-odoc-action@main
+        with:
+          GENERATED_DOC_DIR: doc/
+        if: github.event_name == 'push' && matrix.deploy-doc == 'deploy-doc'
 
   ## ======================== [ Docker-based CI ] ======================== ##
 
