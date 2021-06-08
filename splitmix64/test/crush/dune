@@ -1,0 +1,37 @@
+(executables
+ (names small_crush crush big_crush)
+ (libraries xoshiro.pure.splitmix64 testu01))
+
+(rule (with-stdout-to small_crush.output (run ./small_crush.exe)))
+(rule (with-stdout-to       crush.output (run       ./crush.exe)))
+(rule (with-stdout-to   big_crush.output (run   ./big_crush.exe)))
+
+;; SmallCrush
+
+(rule (alias runtest)
+ (action
+  (pipe-stdout
+   (cat small_crush.output)
+   (system "grep 'All tests were passed'")
+   (system "wc -l")
+   (system "grep -q '^1$'"))))
+
+;; ;; Crush
+
+;; (rule (alias runtest)
+;;  (action
+;;   (pipe-stdout
+;;    (cat crush.output)
+;;    (system "grep 'All tests were passed'")
+;;    (system "wc -l")
+;;    (system "grep -q '^1$'"))))
+
+;; ;; BigCrush
+
+;; (rule (alias runtest)
+;;  (action
+;;   (pipe-stdout
+;;    (cat big_crush.output)
+;;    (system "grep 'All tests were passed'")
+;;    (system "wc -l")
+;;    (system "grep -q '^1$'"))))
