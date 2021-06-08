@@ -32,51 +32,6 @@ let next s =
   (* return result; *)
   result
 
-(* include MakeRandom.Full(struct
- *     type state =
- *       { ll_state : int64 array ;
- *         mutable second : int ;
- *         mutable use_second : bool }
- *
- *     let new_state () =
- *       { ll_state = Array.make 4 Int64.zero ;
- *         second = 0 ;
- *         use_second = false }
- *
- *     let default =
- *       { ll_state =
- *           [| 0xdeadbeefdeadbeefL;
- *              0x4242424242424242L;
- *              0x3737373737373737L;
- *              0xca7aca7aca7aca7aL |] ; (\* FIXME *\)
- *         second = 0 ;
- *         use_second = false }
- *
- *     let assign s1 s2 =
- *       Array.blit s2.ll_state 0 s1.ll_state 0 4;
- *       s1.second <- s2.second;
- *       s1.use_second <- s2.use_second
- *
- *     let full_init _state _seed =
- *       assert false
- *
- *     let u30mask = (1 lsl 30) - 1
- *
- *     let bits state =
- *       if state.use_second then
- *         (
- *           state.use_second <- false;
- *           state.second
- *         )
- *       else
- *         (
- *           let result = next state.ll_state in
- *           state.second <- Int64.to_int result land u30mask;
- *           state.use_second <- true;
- *           Int64.(to_int (shift_right_logical result 34))
- *         )
- *   end) *)
-
 include MakeRandom.Full(struct
     type state =
       { ll_state : int64 array ;
