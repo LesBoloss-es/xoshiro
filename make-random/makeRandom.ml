@@ -1,5 +1,6 @@
 module Bits = Bits
 module Sig = Sig
+module Utils = Utils
 
 external random_seed: unit -> int array = "caml_sys_random_seed"
 

@@ -17,3 +17,7 @@ module Basic : functor (B: Bits.BASIC) -> Sig.BASIC
 (** {2 Functor for the Full Interface} *)
 
 module Full  : functor (B: Bits.FULL)  -> Sig.FULL
+
+(** {2 Others} *)
+
+module Utils = Utils

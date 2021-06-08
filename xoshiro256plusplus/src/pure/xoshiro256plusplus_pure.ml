@@ -33,21 +33,20 @@ let next s =
   result
 
 include MakeRandom.Full(struct
-    type state =
-      { ll_state : int64 array ;
-        mutable second : int }
+    include MakeRandom.Utils.BitsOfNextInt64(struct
+        type state = int64 array
+        let next = next
+      end)
 
     let new_state () =
-      { ll_state = Array.make 4 Int64.zero ;
-        second = -1 }
+      make_state (Array.make 4 Int64.zero)
 
     let default =
-      { ll_state =
-          [| 0xdeadbeefdeadbeefL;
-             0x4242424242424242L;
-             0x3737373737373737L;
-             0xca7aca7aca7aca7aL |] ; (* FIXME *)
-        second = -1 }
+      make_state
+        [| 0xdeadbeefdeadbeefL;
+           0x4242424242424242L;
+           0x3737373737373737L;
+           0xca7aca7aca7aca7aL |] (* FIXME *)
 
     let assign s1 s2 =
       Array.blit s2.ll_state 0 s1.ll_state 0 4;
@@ -55,20 +54,4 @@ include MakeRandom.Full(struct
 
     let full_init _state _seed =
       assert false
-
-    let u30mask = (1 lsl 30) - 1
-
-    let bits state =
-      if state.second > 0 then
-        (
-          let result = state.second in
-          state.second <- -1;
-          result
-        )
-      else
-        (
-          let result = next state.ll_state in
-          state.second <- Int64.to_int result land u30mask;
-          Int64.(to_int (shift_right_logical result 34))
-        )
   end)
