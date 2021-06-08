@@ -1,7 +1,8 @@
-module type GEN = MakeRandom.BASIC
+module type GEN = MakeRandom.Sig.BASIC
 
 let generators : (string * (module GEN)) list = [
   "stdlib",                  (module Random);
+  "splitmix64 (pure)",       (module Splitmix64_pure);
   "xoshiro256++ (pure)",     (module Xoshiro256plusplus_pure);
   "xoshiro256++ (bindings)", (module Xoshiro256plusplus_bindings);
 ]

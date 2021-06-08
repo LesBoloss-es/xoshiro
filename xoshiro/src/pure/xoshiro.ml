@@ -38,3 +38,7 @@ module Xoshiro256plusplus = Xoshiro256plusplus_pure
    {!Xoshiro256plusplus}. *)
 
 include Xoshiro256plusplus
+
+(** {2 Others} *)
+
+module Splitmix64 = Splitmix64_pure
