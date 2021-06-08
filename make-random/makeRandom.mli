@@ -1,16 +1,16 @@
-(** {1 Functor for the Random Module}
+(** {1 Functors for the Random Module}
 
     This module provide functors to reproduce the interface of the standard
     library's Random module with other pseudo-random number generators. *)
 
+module Bits = Bits
+(** Signatures for providers of bits (input signatures of the functors in this
+   module). *)
 
-(** {2 Functor for the Basic Interface}
+module Sig = Sig
+(** Output signatures of the functors in this module. *)
 
-    In case it is not possible to provide what the full interface asks for, one
-    can only provide the bits function. Most of the functions of the {!Random}
-    module will still be provided. The ones manipulating the state will not. Note
-    that this includes all the initialisation functions; the initialisation will
-    therefore have to be done by hand, outside of this module. *)
+(** {2 Functor for the Basic Interface} *)
 
 module Basic : functor (B: Bits.BASIC) -> Sig.BASIC
 

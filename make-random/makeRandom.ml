@@ -1,3 +1,6 @@
+module Bits = Bits
+module Sig = Sig
+
 external random_seed: unit -> int array = "caml_sys_random_seed"
 
 module Full (B : Bits.FULL) : Sig.FULL = struct
