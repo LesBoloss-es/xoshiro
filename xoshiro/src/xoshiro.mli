@@ -39,4 +39,4 @@ include module type of Xoshiro256plusplus
 
 (** {2 Others} *)
 
-module Splitmix64 : MakeRandom.Sig.BASIC
+module Splitmix64 : MakeRandom.Sig.FULL

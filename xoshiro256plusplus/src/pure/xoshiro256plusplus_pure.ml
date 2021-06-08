@@ -48,9 +48,9 @@ include MakeRandom.Full(struct
            0x3737373737373737L;
            0xca7aca7aca7aca7aL |] (* FIXME *)
 
-    let assign s1 s2 =
-      Array.blit s2.ll_state 0 s1.ll_state 0 4;
-      s1.second <- s2.second
+    let assign =
+      make_assign @@ fun s1 s2 ->
+      Array.blit s2 0 s1 0 4
 
     let full_init _state _seed =
       assert false

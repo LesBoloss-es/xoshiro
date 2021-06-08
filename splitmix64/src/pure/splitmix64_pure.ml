@@ -6,12 +6,18 @@ let next x =
 	let z = mul (logxor z (shift_right_logical z 27)) 0x94d049bb133111ebL in
 	logxor z (shift_right_logical z 31)
 
-include MakeRandom.Utils.BitsOfNextInt64(struct
-    type state = int64 ref
-    let next = next
-  end)
+include MakeRandom.Full(struct
+    include MakeRandom.Utils.BitsOfNextInt64(struct
+        type state = int64 ref
+        let next = next
+      end)
 
-include MakeRandom.Basic(struct
-    let state = make_state (ref 7876453234234L)
-    let bits () = bits state
+    let new_state () = make_state (ref 0L)
+    let default = make_state (ref 7876453234234L)
+    let assign = make_assign (fun s1 s2 -> s1 := !s2)
+
+    let full_init state seed =
+      (* FIXME: cycle through all the bits with a xor to seed as many bits as
+         possible from the state *)
+      reset_state state (fun state -> state := Int64.of_int seed.(0))
   end)
