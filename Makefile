@@ -1,9 +1,7 @@
-.PHONY: build doc test install uninstall clean
+.PHONY: build doc test bench install uninstall clean
 
 build:
 	dune build @install
-	[ -e bin ] || ln -sf _build/install/default/bin bin
-	[ -e lib ] || ln -sf _build/install/default/lib lib
 
 doc:
 	dune build @doc
@@ -11,6 +9,9 @@ doc:
 
 test:
 	dune test
+
+bench:
+	dune exec bench/run.exe
 
 install:
 	dune install
@@ -21,4 +22,4 @@ uninstall:
 clean:
 	dune clean
 	rm -f *.opam
-	rm -f bin lib doc
+	rm -f doc
