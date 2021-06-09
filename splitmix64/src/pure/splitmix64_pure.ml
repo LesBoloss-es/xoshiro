@@ -13,11 +13,13 @@ include MakeRandom.Full(struct
       end)
 
     let new_state () = make_state (ref 0L)
-    let default = make_state (ref 7876453234234L)
+
     let assign = make_assign (fun s1 s2 -> s1 := !s2)
 
     let full_init state seed =
-      (* FIXME: cycle through all the bits with a xor to seed as many bits as
-         possible from the state *)
-      reset_state state (fun state -> state := Int64.of_int seed.(0))
+      reset_state state @@ fun state ->
+      state := MakeRandom.Utils.full_init_int64 seed
+
+    let default = make_state (ref (-7756522705895532818L))
+    (* the result of [full_init] on 135801055 *)
   end)

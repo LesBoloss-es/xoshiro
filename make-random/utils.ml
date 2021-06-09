@@ -46,3 +46,26 @@ module BitsOfNextInt64 (N : NEXT_INT64) = struct
         Int64.(to_int (shift_right_logical result 34))
       )
 end
+
+let full_init_int64_array ~size seed =
+  let combine accu x = Digest.string (accu ^ Int.to_string x) in
+  let extract d =
+    let extract8 i =
+      Int64.(shift_left (of_int (Char.code d.[i])) (i * 8))
+    in
+    List.fold_left Int64.add 0L (List.init 8 extract8)
+  in
+  let seed = if Array.length seed = 0 then [| 0 |] else seed in
+  let l = Array.length seed in
+  let arr = Array.init size Int64.of_int in
+  let accu = ref "x" in
+  for i = 0 to size-1 + max size l do
+    let j = i mod size in
+    let k = i mod l in
+    accu := combine !accu seed.(k);
+    arr.(j) <- Int64.logxor arr.(j) (extract !accu)
+  done;
+  arr
+
+let full_init_int64 seed =
+  (full_init_int64_array ~size:1 seed).(0)
