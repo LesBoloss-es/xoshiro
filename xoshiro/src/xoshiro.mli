@@ -28,7 +28,7 @@
    David Blackman and Sebastiano Vigna present several variants of their
    generators depending on the state size and implementation details. *)
 
-module Xoshiro256plusplus : MakeRandom.Sig.BASIC
+module Xoshiro256plusplus : MakeRandom.Sig.FULL
 
 (** {2 Default}
 
