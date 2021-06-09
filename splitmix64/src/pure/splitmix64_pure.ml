@@ -20,6 +20,6 @@ include MakeRandom.Full(struct
       reset_state state @@ fun state ->
       state := MakeRandom.Utils.full_init_int64 seed
 
-    let default = make_state (ref (-7756522705895532818L))
+    let default = make_state (ref 0x945b4bb1ded856eeL)
     (* the result of [full_init] on 135801055 *)
   end)

@@ -50,9 +50,9 @@ include MakeRandom.Full(struct
 
     let default =
       make_state
-        [| -8834433206116304641L;
-           -8946337071913336723L;
-           -2713122746316408295L;
-           979864279706444564L |]
+        [| 0x8565c9ce4d85b8ffL;
+           0x83d839d533b2806dL;
+           0xda590d3ca9c73a19L;
+           0x0d992d5eefff2314L |]
         (* the result of [full_init] on 135801055 *)
   end)
