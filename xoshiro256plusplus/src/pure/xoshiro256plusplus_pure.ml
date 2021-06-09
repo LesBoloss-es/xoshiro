@@ -41,17 +41,18 @@ include MakeRandom.Full(struct
     let new_state () =
       make_state (Array.make 4 Int64.zero)
 
-    let default =
-      make_state
-        [| 0xdeadbeefdeadbeefL;
-           0x4242424242424242L;
-           0x3737373737373737L;
-           0xca7aca7aca7aca7aL |] (* FIXME *)
-
     let assign =
       make_assign @@ fun s1 s2 ->
       Array.blit s2 0 s1 0 4
 
-    let full_init _state _seed =
-      assert false
+    let full_init state seed =
+      assign state (make_state (MakeRandom.Utils.full_init_int64_array ~size:4 seed))
+
+    let default =
+      make_state
+        [| -8834433206116304641L;
+           -8946337071913336723L;
+           -2713122746316408295L;
+           979864279706444564L |]
+        (* the result of [full_init] on 135801055 *)
   end)

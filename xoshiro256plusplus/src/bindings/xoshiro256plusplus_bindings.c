@@ -23,7 +23,11 @@ uint64_t next(uint64_t *s) {
 
 int u30mask = (1 << 30) - 1;
 
-uint64_t ll_state[4] = { 0xdeadbeefdeadbeef, 0x4242424242424242, 0x3737373737373737, 0xca7aca7aca7aca7a };
+uint64_t ll_state[4] =
+  { -8834433206116304641L,
+    -8946337071913336723L,
+    -2713122746316408295L,
+    979864279706444564L };
 
 int second;
 
