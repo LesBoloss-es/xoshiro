@@ -48,7 +48,7 @@ module BitsOfNextInt64 (N : NEXT_INT64) = struct
 end
 
 let full_init_int64_array ~size seed =
-  let combine accu x = Digest.string (accu ^ Int.to_string x) in
+  let combine accu x = Digest.string (accu ^ string_of_int x) in
   let extract d =
     let extract8 i =
       Int64.(shift_left (of_int (Char.code d.[i])) (i * 8))
