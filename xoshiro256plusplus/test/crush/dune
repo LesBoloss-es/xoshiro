@@ -1,6 +1,6 @@
 (executables
  (names small_crush crush big_crush)
- (libraries xoshiro.pure.splitmix64 testu01))
+ (libraries xoshiro.pure.256++ testu01))
 
 (rule (with-stdout-to small_crush.output (run ./small_crush.exe)))
 (rule (with-stdout-to       crush.output (run       ./crush.exe)))
