@@ -32,7 +32,7 @@ let next s =
   (* return result; *)
   result
 
-include MakeRandom.FullHI64(struct
+include MakeRandom.Full64(struct
     type state = int64 array
     let bits = next
 
@@ -42,8 +42,8 @@ include MakeRandom.FullHI64(struct
     let assign state1 state2 =
       Array.blit state2 0 state1 0 4
 
-    let full_init_size = 4
-    let full_init state seed =
+    let init_size = 4
+    let init state seed =
       assign state seed
 
     let default_seed = 135801055

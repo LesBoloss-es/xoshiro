@@ -12,11 +12,10 @@ module Sig = Sig
 
 (** {2 Functor for the Basic Interface} *)
 
-module Basic   : functor (B: Bits.BASIC)   -> Sig.BASIC
-module Basic64 : functor (B: Bits.BASIC64) -> Sig.BASIC
+module Basic30 : functor (B: Bits.Basic30) -> Sig.Basic
+(* module Basic64 : functor (B: Bits.Basic64) -> Sig.Basic *)
 
 (** {2 Functor for the Full Interface} *)
 
-module Full   :   functor (B: Bits.FULL)     -> Sig.FULL
-module Full64 :   functor (B: Bits.FULL64)   -> Sig.FULL
-module FullHI64 : functor (B: Bits.FULLHI64) -> Sig.FULL
+module Full30 : functor (B: Bits.Full30) -> Sig.Full
+module Full64 : functor (B: Bits.Full64) -> Sig.Full

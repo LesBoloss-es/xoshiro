@@ -41,7 +41,7 @@ CAMLprim value caml_assign(value bstate1, value bstate2) {
   CAMLreturn(Val_unit);
 }
 
-CAMLprim value caml_full_init(value bstate, value bseed) {
+CAMLprim value caml_init(value bstate, value bseed) {
   CAMLparam2(bstate, bseed);
   state_t state = * (state_t*) Data_custom_val(bstate);
 
@@ -51,6 +51,6 @@ CAMLprim value caml_full_init(value bstate, value bseed) {
   seed[2] = Int64_val(Field(bseed, 2));
   seed[3] = Int64_val(Field(bseed, 3));
 
-  full_init (state, seed);
+  init (state, seed);
   CAMLreturn(Val_unit);
 }

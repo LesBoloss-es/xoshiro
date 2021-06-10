@@ -39,6 +39,6 @@ void assign(state_t state1, state_t state2) {
   for (int i = 0; i < 4; i++) state1[i] = state2[i];
 }
 
-void full_init(state_t state, uint64_t* seed) {
+void init(state_t state, uint64_t* seed) {
   assign(state, seed);
 }

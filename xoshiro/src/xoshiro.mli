@@ -28,7 +28,7 @@
    David Blackman and Sebastiano Vigna present several variants of their
    generators depending on the state size and implementation details. *)
 
-module Xoshiro256plusplus : MakeRandom.Sig.FULL
+module Xoshiro256plusplus : MakeRandom.Sig.Full
 
 (** {2 Default}
 
@@ -39,4 +39,4 @@ include module type of Xoshiro256plusplus
 
 (** {2 Others} *)
 
-module Splitmix64 : MakeRandom.Sig.FULL
+module Splitmix64 : MakeRandom.Sig.Full

@@ -6,15 +6,15 @@ let next x =
 	let z = mul (logxor z (shift_right_logical z 27)) 0x94d049bb133111ebL in
 	logxor z (shift_right_logical z 31)
 
-include MakeRandom.FullHI64(struct
+include MakeRandom.Full64(struct
     type state = int64 ref
     let bits = next
 
     let new_state () = ref 0L
     let assign s1 s2 = s1 := !s2
 
-    let full_init_size = 1
-    let full_init state seed =
+    let init_size = 1
+    let init state seed =
       state := seed.(0)
 
     let default_seed = 135801055
