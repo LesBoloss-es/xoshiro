@@ -1,6 +1,5 @@
 module Bits = Bits
 module Sig = Sig
-module Utils = Utils
 
 external random_seed: unit -> int array = "caml_sys_random_seed"
 
@@ -99,6 +98,79 @@ module Full (B : Bits.FULL) : Sig.FULL = struct
   let set_state s = B.assign B.default s
 end
 
+module Full64 (B : Bits.FULL64) : Sig.FULL = Full(struct
+    type state =
+      { b_state : B.state ;
+        mutable second : int }
+
+    let new_state () =
+      { b_state = B.new_state ();
+        second = -1 }
+
+    let assign state1 state2 =
+      B.assign state1.b_state state2.b_state;
+      state1.second <- state2.second
+
+    let full_init state seed =
+      B.full_init state.b_state seed;
+      state.second <- -1
+
+    let default =
+      { b_state = B.default ;
+        second = -1 }
+
+    let u30mask = (1 lsl 30) - 1
+
+    let bits state =
+      if state.second > 0 then
+        (
+          let result = state.second in
+          state.second <- -1;
+          result
+        )
+      else
+        (
+          let result = B.bits state.b_state in
+          state.second <- Int64.to_int result land u30mask;
+          Int64.(to_int (shift_right_logical result 34))
+        )
+  end)
+
+module FullHI64 (B : Bits.FULLHI64) : Sig.FULL = Full64(struct
+    type state = B.state
+    let bits = B.bits
+    let new_state = B.new_state
+    let assign = B.assign
+
+    let generate_int64_array ~size seed =
+      let combine accu x = Digest.string (accu ^ string_of_int x) in
+      let extract d =
+        let extract8 i =
+          Int64.(shift_left (of_int (Char.code d.[i])) (i * 8))
+        in
+        List.fold_left Int64.add 0L (List.init 8 extract8)
+      in
+      let seed = if Array.length seed = 0 then [| 0 |] else seed in
+      let l = Array.length seed in
+      let arr = Array.init size Int64.of_int in
+      let accu = ref "x" in
+      for i = 0 to size-1 + max size l do
+        let j = i mod size in
+        let k = i mod l in
+        accu := combine !accu seed.(k);
+        arr.(j) <- Int64.logxor arr.(j) (extract !accu)
+      done;
+      arr
+
+    let full_init state seed =
+      B.full_init state (generate_int64_array ~size:B.full_init_size seed)
+
+    let default =
+      let default = new_state () in
+      full_init default [|B.default_seed|];
+      default
+  end)
+
 module Basic (B : Bits.BASIC) : Sig.BASIC = struct
   include Full (struct
       type state = unit
@@ -112,3 +184,23 @@ module Basic (B : Bits.BASIC) : Sig.BASIC = struct
       let default = ()
     end)
 end
+
+module Basic64 (B : Bits.BASIC64) : Sig.BASIC = Basic(struct
+    let second = ref (-1)
+
+    let u30mask = (1 lsl 30) - 1
+
+    let bits () =
+      if !second > 0 then
+        (
+          let result = !second in
+          second := -1;
+          result
+        )
+      else
+        (
+          let result = B.bits () in
+          second := Int64.to_int result land u30mask;
+          Int64.(to_int (shift_right_logical result 34))
+        )
+  end)
