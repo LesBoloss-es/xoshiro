@@ -7,14 +7,14 @@ module Init30 (B : Bits.Init30) = struct
   type t = B.state
 
   let int_array_of_seed ~size seed =
-    let combine accu x = Digest.string (accu ^ Int.to_string x) in
+    let combine accu x = Digest.string (accu ^ string_of_int x) in
     let extract d =
       let extract8 i = Char.code d.[i] lsl (i * 8) in
       List.fold_left (+) 0 (List.init 4 extract8)
     in
     let seed = if Array.length seed = 0 then [| 0 |] else seed in
     let l = Array.length seed in
-    let arr = Array.init size Fun.id in
+    let arr = Array.init size (fun i -> i) in
     let accu = ref "x" in
     for i = 0 to size-1 + max size l do
       let j = i mod size in
