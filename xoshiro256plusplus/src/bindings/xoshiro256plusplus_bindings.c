@@ -1,4 +1,6 @@
 #include <stdint.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 static inline uint64_t rotl(const uint64_t x, int k) {
 	return (x << k) | (x >> (64 - k));
@@ -21,24 +23,22 @@ uint64_t next(uint64_t *s) {
 	return result;
 }
 
-int u30mask = (1 << 30) - 1;
+/* ************************ [ OCaml-like interface ] ************************ */
 
-uint64_t ll_state[4] =
-  { 0x8565c9ce4d85b8ff,
-    0x83d839d533b2806d,
-    0xda590d3ca9c73a19,
-    0x0d992d5eefff2314 };
+#define state_t uint64_t*
 
-int second;
+uint64_t bits(state_t state) {
+  return next(state);
+}
 
-int bits () {
-  if (second > 0) {
-    int result = second;
-    second = -1;
-    return result;
-  } else {
-    uint64_t result = next(ll_state);
-    second = result & u30mask;
-    return (result >> 34);
-  }
+state_t new_state () {
+  return malloc(4 * sizeof(uint64_t));
+}
+
+void assign(state_t state1, state_t state2) {
+  for (int i = 0; i < 4; i++) state1[i] = state2[i];
+}
+
+void full_init(state_t state, uint64_t* seed) {
+  assign(state, seed);
 }

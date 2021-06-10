@@ -6,20 +6,16 @@ let next x =
 	let z = mul (logxor z (shift_right_logical z 27)) 0x94d049bb133111ebL in
 	logxor z (shift_right_logical z 31)
 
-include MakeRandom.Full(struct
-    include MakeRandom.Utils.BitsOfNextInt64(struct
-        type state = int64 ref
-        let next = next
-      end)
+include MakeRandom.FullHI64(struct
+    type state = int64 ref
+    let bits = next
 
-    let new_state () = make_state (ref 0L)
+    let new_state () = ref 0L
+    let assign s1 s2 = s1 := !s2
 
-    let assign = make_assign (fun s1 s2 -> s1 := !s2)
-
+    let full_init_size = 1
     let full_init state seed =
-      reset_state state @@ fun state ->
-      state := MakeRandom.Utils.full_init_int64 seed
+      state := seed.(0)
 
-    let default = make_state (ref 0x945b4bb1ded856eeL)
-    (* the result of [full_init] on 135801055 *)
+    let default_seed = 135801055
   end)
