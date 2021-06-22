@@ -12,7 +12,8 @@
 
    - {b pass more tests}: [xoshiro256++]/[xoshiro256**] pass the whole
      {{: http://simul.iro.umontreal.ca/testu01/tu01.html}BigCrush} test suite
-     while the {!Random} module of the standard library systematically fails ......
+     while the {!Random} module of the standard library systematically fails
+     some of the tests.
 
    This module and all the variants (see below) are drop-in replacements of the
    {!Random} module of the standard library. This means you can use {!Xoshiro}
