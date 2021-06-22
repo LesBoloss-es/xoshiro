@@ -1,5 +1,5 @@
-module type BASIC = MakeRandom.Sig.BASIC
-module type FULL = MakeRandom.Sig.FULL
+module type BASIC = MakeRandom.Sig.Basic
+module type FULL = MakeRandom.Sig.Full
 
 type gen = B of (module BASIC) | F of (module FULL)
 
@@ -20,23 +20,23 @@ let tests : (string * basic_gen_to_test * full_gen_to_test) list = [
 
   "int",
   BGTT (fun (module G : BASIC) () -> G.int (1 lsl 30 - 1)),
-  FGTT (fun (module G : FULL) -> let state = G.get_state () in fun () -> G.State.int state);
+  FGTT (fun (module G : FULL) -> let state = G.get_state () in fun () -> G.State.int state (1 lsl 30 - 1));
 
   "int32",
   BGTT (fun (module G : BASIC) () -> G.int32 Int32.max_int),
-  FGTT (fun (module G : FULL) -> let state = G.get_state () in fun () -> G.State.int32 state);
+  FGTT (fun (module G : FULL) -> let state = G.get_state () in fun () -> G.State.int32 state Int32.max_int);
 
   "int64",
   BGTT (fun (module G : BASIC) () -> G.int64 Int64.max_int),
-  FGTT (fun (module G : FULL) -> let state = G.get_state () in fun () -> G.State.int64 state);
+  FGTT (fun (module G : FULL) -> let state = G.get_state () in fun () -> G.State.int64 state Int64.max_int);
 
   "nativeint",
   BGTT (fun (module G : BASIC) () -> G.nativeint Nativeint.max_int),
-  FGTT (fun (module G : FULL) -> let state = G.get_state () in fun () -> G.State.nativeint state);
+  FGTT (fun (module G : FULL) -> let state = G.get_state () in fun () -> G.State.nativeint state Nativeint.max_int);
 
   "float",
   BGTT (fun (module G : BASIC) () -> G.float 1.),
-  FGTT (fun (module G : FULL) -> let state = G.get_state () in fun () -> G.State.float state);
+  FGTT (fun (module G : FULL) -> let state = G.get_state () in fun () -> G.State.float state 1.);
 
   "bool",
   BGTT (fun (module G : BASIC) () -> G.bool ()),
