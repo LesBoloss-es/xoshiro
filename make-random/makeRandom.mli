@@ -25,4 +25,4 @@ module Full64 : functor (B: Bits.Full64) -> Sig.Full
    Pretty useless, but allows to check that the signatures in {!Sig} match with
    what is in {!Stdlib.Random}. *)
 
-module StdRandom : Sig.Full with type State.t = Stdlib.Random.State.t
+module StdRandom : Sig.Full with type State.t = Random.State.t

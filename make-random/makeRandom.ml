@@ -274,4 +274,4 @@ end
  *         )
  *   end) *)
 
-module StdRandom = Stdlib.Random
+module StdRandom = Random
