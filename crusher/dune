@@ -1,0 +1,3 @@
+(library
+ (name crusher)
+ (libraries testu01))

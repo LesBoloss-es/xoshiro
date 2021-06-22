@@ -24,4 +24,4 @@
  (depends
   make-random
   (core_bench :with-test)
-  (testu01    :with-test)))
+  (testu01    (and :with-test (>= 1.2.3-0.2)))))
