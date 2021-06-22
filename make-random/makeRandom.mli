@@ -19,3 +19,10 @@ module Basic30 : functor (B: Bits.Basic30) -> Sig.Basic
 
 module Full30 : functor (B: Bits.Full30) -> Sig.Full
 module Full64 : functor (B: Bits.Full64) -> Sig.Full
+
+(** {2 Standard Library's Random}
+
+   Pretty useless, but allows to check that the signatures in {!Sig} match with
+   what is in {!Stdlib.Random}. *)
+
+module StdRandom : Sig.Full with type State.t = Stdlib.Random.State.t

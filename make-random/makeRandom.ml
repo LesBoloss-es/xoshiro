@@ -273,3 +273,5 @@ end
  *           Int64.(to_int (shift_right_logical result 34))
  *         )
  *   end) *)
+
+module StdRandom = Stdlib.Random
