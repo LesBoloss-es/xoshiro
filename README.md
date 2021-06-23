@@ -97,6 +97,11 @@ push to the repository. The tests include:
 - checking that the `MakeRandom` functors build the same interface as the
   standard library.
 
+It is easy to run other test batteries on generators. For instance, one can run
+BigCrush on `xoshiro256++` by calling:
+
+    dune exec xoshiro256plusplus/test/crusher/crusher.exe -- --bigcrush --verbose
+
 The benchmarks allow to compare various PRNGs from this library against each
 other and, more importantly, against the standard library. They can be ran using
 `dune exec bench/run.exe`. For `xoshiro256++`, we observe that the bindings are

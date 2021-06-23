@@ -1,4 +1,4 @@
 let () =
-  Crusher.make
+  Crusher.run
     ~name:"xoshiro256plusplus"
     Xoshiro256plusplus_pure.bits
