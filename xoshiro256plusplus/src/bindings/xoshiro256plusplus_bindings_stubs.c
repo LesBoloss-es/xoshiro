@@ -19,7 +19,7 @@ static struct custom_operations state_ops = {
 
 CAMLprim value caml_bits(value bstate) {
   CAMLparam1(bstate);
-  state_t state = * (state_t*) Data_custom_val(bstate);
+  state_t state = unbox_state(bstate);
   uint64_t result = bits(state);
   CAMLreturn(caml_copy_int64(result));
 }
@@ -28,22 +28,21 @@ CAMLprim value caml_new_state(value unit) {
   CAMLparam1(unit);
   CAMLlocal1(bstate);
   state_t state = new_state();
-  bstate = caml_alloc_custom(&state_ops, sizeof(state_t), 0, 1);
-  memcpy(Data_custom_val(bstate), &state, sizeof(state_t));
+  box_state(state, bstate, state_ops);
   CAMLreturn(bstate);
 }
 
 CAMLprim value caml_assign(value bstate1, value bstate2) {
   CAMLparam2(bstate1, bstate2);
-  state_t state1 = * (state_t*) Data_custom_val(bstate1);
-  state_t state2 = * (state_t*) Data_custom_val(bstate2);
+  state_t state1 = unbox_state(bstate1);
+  state_t state2 = unbox_state(bstate2);
   assign (state1, state2);
   CAMLreturn(Val_unit);
 }
 
 CAMLprim value caml_init(value bstate, value bseed) {
   CAMLparam2(bstate, bseed);
-  state_t state = * (state_t*) Data_custom_val(bstate);
+  state_t state = unbox_state(bstate);
 
   uint64_t *seed = malloc(4 * sizeof(uint64_t));
   seed[0] = Int64_val(Field(bseed, 0));
