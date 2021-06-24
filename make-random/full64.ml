@@ -1,9 +1,39 @@
+(** {1 Full64}
+
+   This module contains one unique functor which, provided a type [state], a
+   function [bits] that generates bits from the state and a few functions to
+   initialise and manipulate the state, returns a module with the same signature
+   as {!Stdlib.Random}. It is basically only a convenience on top of {!State30}
+   and {!Init30}.
+
+   This is the 64-bits version: the function [bits] is expected to return an
+   [int64] in which all the bits are set and the function [init] takes an array
+   of [int64] in which all the bits are set. This version is meant to be used
+   for PRNGs whose state is made of 64-bits integers and who generate 64-bits
+   outputs (eg. [xoshiro256++]). *)
+
 external random_seed: unit -> int array = "caml_sys_random_seed"
 
 module Make (B : Bits.Full64) : Sig.Full = struct
+
+  (* The [bits] function that we receive generates 64 bits but we only want to
+     provide 30-bits outputs. This could be done by tossing away 34 bits, but we
+     can do better: when calling the [bits] function, we take 30 bits from it
+     that we return, but we also save 30 bits for the next call. This way, we
+     toss only 4 bits. Checking in which case we are is (usually) much faster
+     than calling the provided [bits] function, and therefore we save time by
+     doing so. *)
+
   type state =
     { b_state : B.state ;
       mutable second : int }
+
+  (* The state of this functor wraps the given [B.state] in a structure keeping
+     track of both the state and the 30 bits that we saved. [second] is either
+     negative if there are no bits saved, or positive and containing 30 bits. *)
+
+  (* Out of our 64-bits full interface [B], we generate a 30-bits provider [B30]
+     which returns 30 bits at each call but saves 30 bits every time. *)
 
   module B30 = struct
     type nonrec state = state
@@ -25,6 +55,9 @@ module Make (B : Bits.Full64) : Sig.Full = struct
         )
   end
 
+  (* We now lift the state manipulation functions from our 64-bits full
+     interface [B] to a state-only interface [B64]. *)
+
   module B64 = struct
     type nonrec state = state
 
@@ -44,6 +77,9 @@ module Make (B : Bits.Full64) : Sig.Full = struct
 
     let default_seed = B.default_seed
   end
+
+  (* The functor can now be obtained by deriving the bits providers from [B30]
+     and the state-manipulation functions from [B64]. *)
 
   module State = struct
     include State30.Make(B30)

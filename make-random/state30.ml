@@ -1,3 +1,13 @@
+(** {1 State30}
+
+   This module contains one unique functor which, provided a type [state] and a
+   function [bits] generates bits from the state, returns a module similar to
+   that of {!Stdlib.Random.State}, containing all the functions that take the
+   state and generate bits from it.
+
+   This is the 30-bits version: the function [bits] is expected to return an
+   [int] whose 30 lower bits {b only} are set. *)
+
 module Make (B : Bits.State30) = struct
   let bits = B.bits
 

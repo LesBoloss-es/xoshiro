@@ -1,3 +1,21 @@
+(** {1 Init64}
+
+   This module contains one unique functor which, provided a type [state] and a
+   few functions to initialise and manipulate it, returns a module similar to
+   that of {!Stdlib.Random.State}, containing all the functions that initialise
+   and manipulate the state.
+
+   In particular, this functor provide convenient initialisation: it takes a
+   number [init_size] and a function [init] able to initialise a state when
+   given {b an array of size [init_size] containing already "good" bits} and
+   derives from it the function [full_init] generating "good" bits out of an
+   array of anything containing any kind integers (the array {b can} be empty
+   and {b can} contain only low-entropy integers).
+
+   This is the 64-bits version: the function [init] takes an array of [int64] in
+   which all the bits are set. This version is meant to be used for PRNGs whose
+   state is made of 64-bits integers (eg. [xoshiro256++]). *)
+
 external random_seed: unit -> int array = "caml_sys_random_seed"
 
 module Make (B : Bits.Init64) = struct
