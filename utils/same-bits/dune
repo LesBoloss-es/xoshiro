@@ -1,0 +1,3 @@
+(library
+ (name sameBits)
+ (libraries make-random))

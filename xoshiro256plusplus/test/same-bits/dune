@@ -1,5 +1,6 @@
 (tests
  (names sameBits)
  (libraries
+  sameBits
   xoshiro.pure.256++
   xoshiro.bindings.256++))
