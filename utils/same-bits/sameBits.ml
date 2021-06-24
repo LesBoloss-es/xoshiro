@@ -29,10 +29,10 @@ let test_function
         let sv = s () in
         if not (rv = sv) then
           (
-            epf "@.";
-            epf "  Try #%d on %s yield different results!@." nb name;
-            epf "    %s yield %a@." r_name pp rv;
-            epf "    %s yield %a@." s_name pp sv;
+            epf "  fail!@.";
+            epf "    Try #%d on %s yield different results!@." nb name;
+            epf "      %s yield %a@." r_name pp rv;
+            epf "      %s yield %a@." s_name pp sv;
             exit 1 (* FIXME: better interface *)
           );
         test_batch (size-1) (nb+1)
@@ -82,31 +82,31 @@ let test_basic
   [
     T (
       "bits",
-      Format.pp_print_int,
+      (fun fmt -> fpf fmt "0x%x"),
       (fun () -> R.bits ()),
       (fun () -> S.bits ())
     );
     T (
       "int",
-      Format.pp_print_int,
+      (fun fmt -> fpf fmt "0x%x"),
       (fun () -> R.int (1 lsl 30 - 1)),
       (fun () -> S.int (1 lsl 30 - 1))
     );
     T (
       "int32",
-      (fun fmt -> fpf fmt "%lx"),
+      (fun fmt -> fpf fmt "0x%lx"),
       (fun () -> R.int32 Int32.max_int),
       (fun () -> S.int32 Int32.max_int)
     );
     T (
       "int64",
-      (fun fmt -> fpf fmt "%Lx"),
+      (fun fmt -> fpf fmt "0x%Lx"),
       (fun () -> R.int64 Int64.max_int),
       (fun () -> S.int64 Int64.max_int)
     );
     T (
       "nativeint",
-      (fun fmt -> fpf fmt "%nx"),
+      (fun fmt -> fpf fmt "0x%nx"),
       (fun () -> R.nativeint Nativeint.max_int),
       (fun () -> S.nativeint Nativeint.max_int)
     );
@@ -144,31 +144,31 @@ let test_state
   [
     T (
       "State.bits",
-      Format.pp_print_int,
+      (fun fmt -> fpf fmt "0x%x"),
       (fun () -> R.State.bits r_state),
       (fun () -> S.State.bits s_state)
     );
     T (
       "State.int",
-      Format.pp_print_int,
+      (fun fmt -> fpf fmt "0x%x"),
       (fun () -> R.State.int r_state (1 lsl 30 - 1)),
       (fun () -> S.State.int s_state (1 lsl 30 - 1))
     );
     T (
       "State.int32",
-      (fun fmt -> fpf fmt "%lx"),
+      (fun fmt -> fpf fmt "0x%lx"),
       (fun () -> R.State.int32 r_state Int32.max_int),
       (fun () -> S.State.int32 s_state Int32.max_int)
     );
     T (
       "State.int64",
-      (fun fmt -> fpf fmt "%Lx"),
+      (fun fmt -> fpf fmt "0x%Lx"),
       (fun () -> R.State.int64 r_state Int64.max_int),
       (fun () -> S.State.int64 s_state Int64.max_int)
     );
     T (
       "State.nativeint",
-      (fun fmt -> fpf fmt "%nx"),
+      (fun fmt -> fpf fmt "0x%nx"),
       (fun () -> R.State.nativeint r_state Nativeint.max_int),
       (fun () -> S.State.nativeint s_state Nativeint.max_int)
     );
