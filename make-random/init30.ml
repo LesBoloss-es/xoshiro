@@ -25,7 +25,7 @@ module Make (B : Bits.Init30) = struct
     let combine accu x = Digest.string (accu ^ string_of_int x) in
     let extract d =
       let extract8 i = Char.code d.[i] lsl (i * 8) in
-      List.fold_left (+) 0 (List.init 4 extract8)
+      extract8 0 + extract8 1 + extract8 2 + extract8 3
     in
     let seed = if Array.length seed = 0 then [| 0 |] else seed in
     let l = Array.length seed in

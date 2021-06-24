@@ -27,7 +27,9 @@ module Make (B : Bits.Init64) = struct
       let extract8 i =
         Int64.(shift_left (of_int (Char.code d.[i])) (i * 8))
       in
-      List.fold_left Int64.add 0L (List.init 8 extract8)
+      let (+) = Int64.add in
+      extract8 0 + extract8 1 + extract8 2 + extract8 3
+      + extract8 4 + extract8 5 + extract8 6 + extract8 7
     in
     let seed = if Array.length seed = 0 then [| 0 |] else seed in
     let l = Array.length seed in
