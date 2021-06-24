@@ -8,7 +8,7 @@ jobs:
 
   ## ========================= [ OPAM-based CI ] ========================= ##
 
-  opam-based:
+  opam:
 
     strategy:
       fail-fast: false
@@ -23,9 +23,13 @@ jobs:
           - 4.10.2
           - 4.11.2
         include:
-          - { os: ubuntu-latest,  ocaml-version: 4.12.0, deploy-doc: deploy-doc }
-          # - { os: macos-latest,   ocaml-version: 4.12.0 } ##FIXME: when TestU01 is fixed, run on macOS again
-          - { os: windows-latest, ocaml-version: 4.12.0 }
+          - { os: ubuntu-latest,  ocaml-version: 4.12.0 }
+          - { os: ubuntu-latest,  ocaml-version: 4.02.3, no-tests: no-tests }
+          - { os: ubuntu-latest,  ocaml-version: 4.03.0, no-tests: no-tests }
+          - { os: ubuntu-latest,  ocaml-version: 4.04.2, no-tests: no-tests }
+          - { os: ubuntu-latest,  ocaml-version: 4.05.0, no-tests: no-tests }
+          - { os: macos-latest,   ocaml-version: 4.12.0, no-tests: no-tests }
+          - { os: windows-latest, ocaml-version: 4.12.0, no-tests: no-tests }
 
     runs-on: ${{ matrix.os }}
 
@@ -44,8 +48,13 @@ jobs:
           opam exec -- dune build 2>/dev/null || true
           opam pin . --no-action
           for pkg in $(opam pin list --short); do
-            opam depext $pkg --with-doc --with-test
-            opam install $pkg --deps-only --with-doc --with-test
+            if [ "${{ matrix.no-tests }}" = no-tests ]; then
+              opam depext $pkg --with-doc
+              opam install $pkg --deps-only --with-doc
+            else
+              opam depext $pkg --with-doc --with-test
+              opam install $pkg --deps-only --with-doc --with-test
+            fi
           done
           ## FIXME: The caught failure of dune build is here to mitigate #4487.
         if: runner.os != 'Windows'
@@ -54,10 +63,15 @@ jobs:
         run: |
           opam install dune
           opam exec -- dune build
-          opam pin $_ . --no-action
+          opam pin . --no-action
           opam pin list --short | ForEach {
-            opam depext $_ --with-doc --with-test
-            opam install $_ --deps-only --with-doc --with-test
+            if ("${{ matrix.no-tests }}" -eq "no-tests") {
+              opam depext $_ --with-doc
+              opam install $_ --deps-only --with-doc
+            } else {
+              opam depext $_ --with-doc --with-test
+              opam install $_ --deps-only --with-doc --with-test
+            }
           }
         if: runner.os == 'Windows'
 
@@ -66,11 +80,10 @@ jobs:
 
       - name: Run Tests
         run: opam exec -- make test
-        if: runner.os != 'Windows'
+        if: matrix.no-tests != 'no-tests'
 
       - name: Try Building Documentation
         run: opam exec -- make doc
-        if: runner.os != 'macOS'
 
       - name: Try Installing
         run: opam exec -- make install
@@ -93,7 +106,7 @@ jobs:
 
   ## ======================== [ Docker-based CI ] ======================== ##
 
-  docker-based:
+  docker:
 
     strategy:
       fail-fast: false
