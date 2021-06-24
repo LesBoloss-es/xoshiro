@@ -106,5 +106,4 @@ The benchmarks allow to compare various PRNGs from this library against each
 other and, more importantly, against the standard library. They can be ran using
 `dune exec bench/run.exe`. For `xoshiro256++`, we observe that the bindings are
 slightly slower than the standard library, and almost twice faster than the pure
-implementations. In a future work, we are going to improve the bindings so that
-they beat the standard library, at least in the stateless version.
+implementations.
