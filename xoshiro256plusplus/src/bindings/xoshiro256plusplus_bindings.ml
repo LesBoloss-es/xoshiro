@@ -1,7 +1,7 @@
-include MakeRandom.Full64(struct
+include MakeRandom.Full30Init64(struct
     type state
 
-    external bits : state -> int64 = "caml_bits"
+    external bits : state -> int = "caml_bits"
     external new_state : unit -> state = "caml_new_state"
     external assign : state -> state -> unit = "caml_assign"
 

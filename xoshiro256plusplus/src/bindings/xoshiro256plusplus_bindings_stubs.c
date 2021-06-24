@@ -8,9 +8,15 @@
 
 #include "xoshiro256plusplus_bindings.h"
 
+void finalize_state(value bstate) {
+  state_t state = unbox_state(bstate);
+  free(state.b_state);
+  free(state.second);
+}
+
 static struct custom_operations state_ops = {
-  .identifier = "fr.boloss.xoshiro.bindings.256++.state_t",
-  .finalize = custom_finalize_default,
+  .identifier = "fr.boloss.xoshiro.bindings.256++.state",
+  .finalize = finalize_state,
   .compare = custom_compare_default,
   .hash = custom_hash_default,
   .serialize = custom_serialize_default,
@@ -20,8 +26,8 @@ static struct custom_operations state_ops = {
 CAMLprim value caml_bits(value bstate) {
   CAMLparam1(bstate);
   state_t state = unbox_state(bstate);
-  uint64_t result = bits(state);
-  CAMLreturn(caml_copy_int64(result));
+  int result = bits(state);
+  CAMLreturn(Val_int(result));
 }
 
 CAMLprim value caml_new_state(value unit) {
