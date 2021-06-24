@@ -18,6 +18,7 @@ module Basic30 : functor (B: Bits.Basic30) -> Sig.Basic
 
 module Full30 : functor (B: Bits.Full30) -> Sig.Full
 module Full64 : functor (B: Bits.Full64) -> Sig.Full
+module Full30Init64 : functor (B: Bits.Full30Init64) -> Sig.Full
 
 (** {2 Standard Library's Random}
 

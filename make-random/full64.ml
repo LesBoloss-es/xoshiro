@@ -99,5 +99,5 @@ module Make (B : Bits.Full64) : Sig.Full = struct
   let self_init () = full_init (random_seed ())
 
   let get_state () = State.copy State.default
-  let set_state s = B64.assign State.default s
+  let set_state state = B64.assign State.default state
 end

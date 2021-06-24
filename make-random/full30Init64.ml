@@ -1,4 +1,4 @@
-(** {1 Full30}
+(** {1 Full30Init64}
 
    This module contains one unique functor which, provided a type [state], a
    function [bits] that generates bits from the state and a few functions to
@@ -6,19 +6,18 @@
    as {!Stdlib.Random}. It is basically only a convenience on top of {!State30}
    and {!Init30}.
 
-   This is the 30-bits version: the function [bits] is expected to return an
+   This is the 30/64-bits version: the function [bits] is expected to return an
    [int] whose 30 lower bits {b only} are set, and the function [init] is
-   expected to take an array of [int] whose 30 lower bits {b only} are set.
-   This version is meant to be used for PRNGs whose state is made of 30-bits
-   integers and who generate 30-bits outputs (eg. the one from the standard
-   library). *)
+   expected to take an array of [int64] whose 64 bits are set. This version is
+   meant to be used for PRNGs whose state is made of 64-bits integers and who
+   generate 30-bits outputs (eg. the bindings for [xoshiro256++]). *)
 
 external random_seed: unit -> int array = "caml_sys_random_seed"
 
-module Make (B : Bits.Full30) : Sig.Full = struct
+module Make (B : Bits.Full30Init64) : Sig.Full = struct
   module State = struct
     include State30.Make(B)
-    include Init30.Make(B)
+    include Init64.Make(B)
   end
 
   let bits () = State.bits State.default
