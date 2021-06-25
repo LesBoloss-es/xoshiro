@@ -59,7 +59,7 @@ let test_function
   let nb = test_all 1 in
   epf "\r  %*.2fs  %*d  %s  OK!@."
     prec_time (Sys.time () -. begin_time)
-    prec_iterations nb
+    prec_iterations (nb - 1)
     name
 
 type test =

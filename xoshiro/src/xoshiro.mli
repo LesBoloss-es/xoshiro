@@ -15,6 +15,9 @@
      while the {!Random} module of the standard library systematically fails
      some of the tests.
 
+   - {b run similarly fast} for the bindings and twice slower for the pure
+     implementation.
+
    This module and all the variants (see below) are drop-in replacements of the
    {!Random} module of the standard library. This means you can use {!Xoshiro}
    everywhere where you would use {!Random}. For instance:
@@ -41,3 +44,8 @@ include module type of Xoshiro256plusplus
 (** {2 Others} *)
 
 module Splitmix64 : MakeRandom.Sig.Full
+
+(* Not to self [from Niols]: it is tempting, while we're at it, to provide
+   bindings for a C implementation of the standard library's Mersene Twister. I
+   have tried this and, as it turns out, it is pretty hard to beat the pure
+   OCaml implementation of the standard library. *)
