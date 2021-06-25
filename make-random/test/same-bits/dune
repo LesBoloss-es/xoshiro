@@ -1,0 +1,5 @@
+(tests
+ (names sameBits)
+ (libraries
+  sameBits
+  make-random))

@@ -31,8 +31,9 @@ let test_function
           (
             epf "  fail!@.";
             epf "    Try #%d on %s yield different results!@." nb name;
-            epf "      %s yield %a@." r_name pp rv;
-            epf "      %s yield %a@." s_name pp sv;
+            let len = max (String.length r_name) (String.length s_name) in
+            epf "    - %*s yield %a@." len r_name pp rv;
+            epf "    - %*s yield %a@." len s_name pp sv;
             exit 1 (* FIXME: better interface *)
           );
         test_batch (size-1) (nb+1)
