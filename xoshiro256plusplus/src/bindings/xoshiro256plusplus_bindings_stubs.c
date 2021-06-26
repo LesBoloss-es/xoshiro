@@ -11,75 +11,75 @@
 
 /* ******************************** [ bits ] ******************************** */
 
-static int u30mask = (1 << 30) - 1;
+static int x256pp_u30mask = (1 << 30) - 1;
 
-unsigned int bits (state_t state) {
+unsigned int x256pp_bits (x256pp_state_t state) {
   if (*state.second > 0) {
     int result = *state.second;
     *state.second = -1;
     return result;
   }
   else {
-    uint64_t result = next(state.b_state);
-    *state.second = result & u30mask;
-    return ((result >> 34) & u30mask);
+    uint64_t result = x256pp_next(state.b_state);
+    *state.second = result & x256pp_u30mask;
+    return ((result >> 34) & x256pp_u30mask);
   }
 }
 
-CAMLprim value caml_bits(value bstate) {
+CAMLprim value caml_x256pp_bits(value bstate) {
   CAMLparam1(bstate);
-  state_t state = unbox_state(bstate);
-  int result = bits(state);
+  x256pp_state_t state = unbox_x256pp_state(bstate);
+  int result = x256pp_bits(state);
   CAMLreturn(Val_int(result));
 }
 
 /* ***************************** [ new_state ] ****************************** */
 
-state_t new_state () {
-  state_t state;
+x256pp_state_t x256pp_new_state () {
+  x256pp_state_t state;
   state.b_state = malloc(4 * sizeof(uint64_t));
   state.second = malloc(sizeof(int));
   *state.second = -1;
   return state;
 }
 
-CAMLprim value caml_new_state(value unit) {
+CAMLprim value caml_x256pp_new_state(value unit) {
   CAMLparam1(unit);
   CAMLlocal1(bstate);
-  state_t state = new_state();
-  box_state(state, bstate, state_ops);
+  x256pp_state_t state = x256pp_new_state();
+  box_x256pp_state(state, bstate);
   CAMLreturn(bstate);
 }
 
 /* ******************************* [ assign ] ******************************* */
 
-void assign(state_t state1, state_t state2) {
+void x256pp_assign(x256pp_state_t state1, x256pp_state_t state2) {
   for (int i = 0; i < 4; i++)
     state1.b_state[i] = state2.b_state[i];
   *state1.second = *state2.second;
 }
 
-CAMLprim value caml_assign(value bstate1, value bstate2) {
+CAMLprim value caml_x256pp_assign(value bstate1, value bstate2) {
   CAMLparam2(bstate1, bstate2);
-  state_t state1 = unbox_state(bstate1);
-  state_t state2 = unbox_state(bstate2);
-  assign (state1, state2);
+  x256pp_state_t state1 = unbox_x256pp_state(bstate1);
+  x256pp_state_t state2 = unbox_x256pp_state(bstate2);
+  x256pp_assign (state1, state2);
   CAMLreturn(Val_unit);
 }
 
 /* ******************************** [ init ] ******************************** */
 
-void init(state_t state, uint64_t* seed) {
-  state_t state2;
+void x256pp_init(x256pp_state_t state, uint64_t* seed) {
+  x256pp_state_t state2;
   state2.b_state = seed;
   state2.second = malloc(sizeof(int));
   *state2.second = -1;
-  assign(state, state2);
+  x256pp_assign(state, state2);
 }
 
-CAMLprim value caml_init(value bstate, value bseed) {
+CAMLprim value caml_x256pp_init(value bstate, value bseed) {
   CAMLparam2(bstate, bseed);
-  state_t state = unbox_state(bstate);
+  x256pp_state_t state = unbox_x256pp_state(bstate);
 
   uint64_t *seed = malloc(4 * sizeof(uint64_t));
   seed[0] = Int64_val(Field(bseed, 0));
@@ -87,6 +87,6 @@ CAMLprim value caml_init(value bstate, value bseed) {
   seed[2] = Int64_val(Field(bseed, 2));
   seed[3] = Int64_val(Field(bseed, 3));
 
-  init (state, seed);
+  x256pp_init (state, seed);
   CAMLreturn(Val_unit);
 }

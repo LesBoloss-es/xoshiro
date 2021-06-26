@@ -2,12 +2,12 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-static inline uint64_t rotl(const uint64_t x, int k) {
+static inline uint64_t x256pp_rotl(const uint64_t x, int k) {
 	return (x << k) | (x >> (64 - k));
 }
 
-uint64_t next(uint64_t *s) {
-	const uint64_t result = rotl(s[0] + s[3], 23) + s[0];
+uint64_t x256pp_next(uint64_t *s) {
+	const uint64_t result = x256pp_rotl(s[0] + s[3], 23) + s[0];
 
 	const uint64_t t = s[1] << 17;
 
@@ -18,7 +18,7 @@ uint64_t next(uint64_t *s) {
 
 	s[2] ^= t;
 
-	s[3] = rotl(s[3], 45);
+	s[3] = x256pp_rotl(s[3], 45);
 
 	return result;
 }
