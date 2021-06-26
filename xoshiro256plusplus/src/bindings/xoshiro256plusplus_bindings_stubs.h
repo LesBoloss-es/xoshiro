@@ -35,6 +35,10 @@ static struct custom_operations x256pp_state_ops = {
       memcpy(Data_custom_val(bstate), &state, sizeof(x256pp_state_t));  \
     })
 
+CAMLprim value caml_x256pp_next(value barray);
+CAMLprim value caml_x256pp_jump(value barray);
+CAMLprim value caml_x256pp_long_jump(value barray);
+
 CAMLprim value caml_x256pp_bits(value bstate);
 CAMLprim value caml_x256pp_new_state(value unit);
 CAMLprim value caml_x256pp_assign(value bstate1, value bstate2);

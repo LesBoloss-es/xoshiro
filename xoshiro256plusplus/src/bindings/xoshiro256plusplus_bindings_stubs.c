@@ -9,6 +9,32 @@
 #include "xoshiro256plusplus_bindings.h"
 #include "xoshiro256plusplus_bindings_stubs.h"
 
+/* ************************************************************************** */
+/* ************************ [ Low-level Interface ] ************************* */
+/* ************************************************************************** */
+
+CAMLprim value caml_x256pp_next(value state) {
+  CAMLparam1(state);
+  uint64_t result = x256pp_next((uint64_t*) state);
+  CAMLreturn(caml_copy_int64(result));
+}
+
+CAMLprim value caml_x256pp_jump (value state) {
+  CAMLparam1(state);
+  x256pp_jump((uint64_t*) state);
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value caml_x256pp_long_jump (value state) {
+  CAMLparam1(state);
+  x256pp_long_jump((uint64_t*) state);
+  CAMLreturn(Val_unit);
+}
+
+/* ************************************************************************** */
+/* ************************* [ OCaml-y Interface ] ************************** */
+/* ************************************************************************** */
+
 /* ******************************** [ bits ] ******************************** */
 
 static int x256pp_u30mask = (1 << 30) - 1;
