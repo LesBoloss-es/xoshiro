@@ -1,11 +1,3 @@
-(** {1 xoshiro256++} *)
-
-(** {2 Low-level Interface}
-
-   Direct bindings of the functions provided in the original implementation. The
-   state is an [int64 array] of 4 values. More will be useless; less will lead
-   to segmentation faults (this is how low-level it is). *)
-
 module LowLevel = struct
   type t = (int64, Bigarray.int64_elt, Bigarray.c_layout) Bigarray.Array1.t
 
@@ -18,22 +10,9 @@ module LowLevel = struct
     Array.init 4 (Bigarray.Array1.get ba)
 
   external next : t -> int64 = "caml_x256pp_next"
-
   external jump : t -> unit = "caml_x256pp_jump"
-  (** This is the jump function for the generator. It is equivalent to 2^128
-     calls to {!next}; it can be used to generate 2^128 non-overlapping
-     subsequences for parallel computations. *)
-
   external long_jump : t -> unit = "caml_x256pp_long_jump"
-  (** This is the long-jump function for the generator. It is equivalent to
-     2^192 calls to {!next}; it can be used to generate 2^64 starting points,
-     from each of which {!jump} will generate 2^64 non-overlapping subsequences
-     for parallel distributed computations. *)
 end
-
-(** {2 OCaml-y Interface}
-
-   An interface resembling that of the Random module of the standard library. *)
 
 include MakeRandom.Full30Init64(struct
     type state

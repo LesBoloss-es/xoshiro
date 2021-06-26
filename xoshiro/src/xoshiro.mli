@@ -33,17 +33,39 @@
    generators depending on the state size and implementation details. *)
 
 module Xoshiro256plusplus : sig
+  include MakeRandom.Sig.Full
+
+  (** {3 Low-level Interface}
+
+     Direct bindings of the functions provided in the original implementation.
+     *)
+
   module LowLevel : sig
     type t
+    (** Low-level type for [xoshiro256++]. This is basically an [int64 array] of
+       4 values. *)
+
     val of_int64_array : int64 array -> t
+    (** Copy an [int64 array] to the state.
+
+        @raise Invalid_argument if the array is not of size 4. *)
+
     val to_int64_array : t -> int64 array
+    (** Copy the state to an [int64 array]. *)
 
     val next : t -> int64
-    val jump : t -> unit
-    val long_jump : t -> unit
-  end
 
-  include MakeRandom.Sig.Full
+    val jump : t -> unit
+    (** This is the jump function for the generator. It is equivalent to 2¹²⁸
+       calls to {!next}; it can be used to generate 2¹²⁸ non-overlapping
+       subsequences for parallel computations. *)
+
+    val long_jump : t -> unit
+    (** This is the long-jump function for the generator. It is equivalent to
+       2¹⁹² calls to {!next}; it can be used to generate 2⁶⁴ starting points,
+       from each of which {!jump} will generate 2⁶⁴ non-overlapping subsequences
+       for parallel distributed computations. *)
+  end
 end
 
 (** {2 Default}
