@@ -2,5 +2,5 @@
  (name run)
  (libraries
   core_bench make-random
-  xoshiro.pure.256++ xoshiro.bindings.256++
-  xoshiro.pure.splitmix64))
+  xoshiro.256++.pure xoshiro.256++.bindings
+  xoshiro.splitmix64.pure))

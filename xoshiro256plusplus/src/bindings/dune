@@ -1,6 +1,6 @@
 (library
  (name xoshiro256plusplus_bindings)
- (public_name xoshiro.bindings.256++)
+ (public_name xoshiro.256++.bindings)
  (foreign_stubs
   (language c)
   (names

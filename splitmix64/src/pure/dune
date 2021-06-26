@@ -1,4 +1,4 @@
 (library
  (name splitmix64_pure)
- (public_name xoshiro.pure.splitmix64)
+ (public_name xoshiro.splitmix64.pure)
  (libraries make-random))

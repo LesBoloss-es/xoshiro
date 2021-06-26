@@ -3,5 +3,5 @@
  (implements xoshiro)
  (public_name xoshiro.pure)
  (libraries
-  xoshiro.pure.256++
-  xoshiro.pure.splitmix64))
+  xoshiro.256++.pure
+  xoshiro.splitmix64.pure))

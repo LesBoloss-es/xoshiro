@@ -2,5 +2,4 @@
  (names sameBits)
  (libraries
   sameBits
-  xoshiro.pure.256++
-  xoshiro.bindings.256++))
+  xoshiro.256++.pure xoshiro.256++.bindings))
