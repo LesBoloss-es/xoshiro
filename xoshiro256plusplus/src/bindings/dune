@@ -6,4 +6,4 @@
   (names
    xoshiro256plusplus_bindings
    xoshiro256plusplus_bindings_stubs))
- (libraries make-random))
+ (libraries make-random bigarray))
