@@ -7,16 +7,24 @@
    to segmentation faults (this is how low-level it is). *)
 
 module LowLevel = struct
-  type int64_array = (int64, Bigarray.int64_elt, Bigarray.c_layout) Bigarray.Array1.t
+  type t = (int64, Bigarray.int64_elt, Bigarray.c_layout) Bigarray.Array1.t
 
-  external next : int64_array -> int64 = "caml_x256pp_next"
+  let of_int64_array a =
+    if Array.length a <> 4 then
+      invalid_arg "Xoshiro256plusplus.LowLevel.of_int64_array";
+    Bigarray.(Array1.of_array int64 c_layout) a
 
-  external jump : int64_array -> unit = "caml_x256pp_jump"
+  let to_int64_array ba =
+    Array.init 4 (Bigarray.Array1.get ba)
+
+  external next : t -> int64 = "caml_x256pp_next"
+
+  external jump : t -> unit = "caml_x256pp_jump"
   (** This is the jump function for the generator. It is equivalent to 2^128
      calls to {!next}; it can be used to generate 2^128 non-overlapping
      subsequences for parallel computations. *)
 
-  external long_jump : int64_array -> unit = "caml_x256pp_long_jump"
+  external long_jump : t -> unit = "caml_x256pp_long_jump"
   (** This is the long-jump function for the generator. It is equivalent to
      2^192 calls to {!next}; it can be used to generate 2^64 starting points,
      from each of which {!jump} will generate 2^64 non-overlapping subsequences

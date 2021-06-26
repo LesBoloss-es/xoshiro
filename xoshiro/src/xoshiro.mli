@@ -32,7 +32,19 @@
    David Blackman and Sebastiano Vigna present several variants of their
    generators depending on the state size and implementation details. *)
 
-module Xoshiro256plusplus : MakeRandom.Sig.Full
+module Xoshiro256plusplus : sig
+  module LowLevel : sig
+    type t
+    val of_int64_array : int64 array -> t
+    val to_int64_array : t -> int64 array
+
+    val next : t -> int64
+    val jump : t -> unit
+    val long_jump : t -> unit
+  end
+
+  include MakeRandom.Sig.Full
+end
 
 (** {2 Default}
 

@@ -5,6 +5,7 @@
 #include <caml/alloc.h>
 #include <caml/memory.h>
 #include <caml/custom.h>
+#include <caml/bigarray.h>
 
 #include "xoshiro256plusplus_bindings.h"
 #include "xoshiro256plusplus_bindings_stubs.h"
@@ -13,21 +14,24 @@
 /* ************************ [ Low-level Interface ] ************************* */
 /* ************************************************************************** */
 
-CAMLprim value caml_x256pp_next(value state) {
-  CAMLparam1(state);
-  uint64_t result = x256pp_next((uint64_t*) state);
+CAMLprim value caml_x256pp_next(value bstate) {
+  CAMLparam1(bstate);
+  uint64_t *state = Caml_ba_data_val(bstate);
+  uint64_t result = x256pp_next(state);
   CAMLreturn(caml_copy_int64(result));
 }
 
-CAMLprim value caml_x256pp_jump (value state) {
-  CAMLparam1(state);
-  x256pp_jump((uint64_t*) state);
+CAMLprim value caml_x256pp_jump (value bstate) {
+  CAMLparam1(bstate);
+  uint64_t *state = Caml_ba_data_val(bstate);
+  x256pp_jump(state);
   CAMLreturn(Val_unit);
 }
 
-CAMLprim value caml_x256pp_long_jump (value state) {
-  CAMLparam1(state);
-  x256pp_long_jump((uint64_t*) state);
+CAMLprim value caml_x256pp_long_jump (value bstate) {
+  CAMLparam1(bstate);
+  uint64_t *state = Caml_ba_data_val(bstate);
+  x256pp_long_jump(state);
   CAMLreturn(Val_unit);
 }
 

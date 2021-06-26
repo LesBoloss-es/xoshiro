@@ -1,0 +1,5 @@
+(executable
+ (name sameBitsLL)
+ (libraries
+  xoshiro.bindings.256++
+  xoshiro.pure.256++))
