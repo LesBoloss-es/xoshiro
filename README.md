@@ -107,3 +107,17 @@ other and, more importantly, against the standard library. They can be ran using
 `dune exec bench/run.exe`. For `xoshiro256++`, we observe that the bindings are
 slightly slower than the standard library, and almost twice faster than the pure
 implementations.
+
+Related Word
+------------
+
+- [Xavier Leroy's PRINGO](https://github.com/xavierleroy/pringo), “pseudo-random
+  number generators that support splitting and two interfaces: one stateful, one
+  purely functional”. Xavier Leroy's work is very similar to ours: it provides
+  new PRNGs for OCaml (including Split mix which we can also find in the package
+  `xoshiro`) in an interface similar to that of the standard library (although
+  not exactly the same, contrary to what can be obtained with `make-random`).
+
+- [Mirage's Crypto Library](https://github.com/mirage/mirage-crypto), including
+  in particular the strong, cryptographically secure, PRNG Fortuna. This is
+  further from our work as usage is really not the same.
