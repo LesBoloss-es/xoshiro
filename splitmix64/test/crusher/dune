@@ -1,4 +1,4 @@
 (tests
  (names crusher)
  (package xoshiro)
- (libraries crusher xoshiro.splitmix64.pure))
+ (libraries libCrusher xoshiro.splitmix64.pure))
