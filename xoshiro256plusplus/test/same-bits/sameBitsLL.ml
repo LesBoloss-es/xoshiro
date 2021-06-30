@@ -1,7 +1,19 @@
 module Pure = Xoshiro256plusplus_pure.LowLevel
 module Bindings = Xoshiro256plusplus_bindings.LowLevel
 
-let state = [| 1L; 2L; 3L; 4L |]
+(* According to David Blackman and Sebastiano Vigna, an easy way to xoshiro256++
+   is to take splitmix64, seed it to anything and use its output. Since we
+   manipulate the low-level interface here which does not have the fancy
+   initialisation of MakeRandom, let us go the splitmix way. *)
+
+let rnd_int64 () =
+  let int64 = Splitmix64_pure.int64 Int64.max_int in
+  if Splitmix64_pure.bool () then
+    int64
+  else
+    Int64.neg int64
+
+let state = [| rnd_int64 (); rnd_int64 (); rnd_int64 (); rnd_int64 () |]
 
 let p_state = Pure.of_int64_array state
 let b_state = Bindings.of_int64_array state
