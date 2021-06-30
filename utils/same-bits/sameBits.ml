@@ -4,6 +4,7 @@ let fpf = Format.fprintf
 let time_limit = 1.
 let iterations_limit = 10_000_000
 let batch_size = 1000
+let refresh_frequency = 0.1
 
 let prec_time =
   1 + int_of_float (ceil (log10 time_limit))
@@ -37,25 +38,29 @@ let test_function name pp r_name (r : unit -> 'a) s_name (s : unit -> 'a) =
       nb
   in
 
-  let rec test_all nb =
-    let time_spent = Sys.time () -. begin_time in
-    if time_spent > time_limit
-       || nb > iterations_limit
-    then
-      nb
-    else
+  let rec test_all last_refresh nb =
+    let curr_time = Sys.time () in
+    let time_spent = curr_time -. begin_time in
+    if time_spent > time_limit || nb > iterations_limit then
+      (     epf "\r  %*.2fs  %*d  %s  OK!@."
+              prec_time (Sys.time () -. begin_time)
+              prec_iterations (nb - 1)
+              name
+      )
+    else if curr_time > last_refresh +. refresh_frequency then
       (
         epf "\r  %*.2fs  %*d  %s@?" prec_time time_spent prec_iterations nb name;
         let nb = test_batch batch_size nb in
-        test_all nb
+        test_all curr_time nb
+      )
+    else
+      (
+        let nb = test_batch batch_size nb in
+        test_all last_refresh nb
       )
   in
 
-  let nb = test_all 1 in
-  epf "\r  %*.2fs  %*d  %s  OK!@."
-    prec_time (Sys.time () -. begin_time)
-    prec_iterations (nb - 1)
-    name
+  test_all 0. 1
 
 (* Test several functions *)
 
