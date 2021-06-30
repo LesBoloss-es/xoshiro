@@ -1,4 +1,4 @@
-(executable
- (name sameBitsLL)
- (libraries
-  xoshiro.256++.pure xoshiro.256++.bindings))
+(tests
+ (names sameBitsLL)
+ (package xoshiro)
+ (libraries xoshiro.256++.pure xoshiro.256++.bindings))
