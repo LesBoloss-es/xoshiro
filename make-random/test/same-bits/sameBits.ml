@@ -47,6 +47,6 @@ module FakeRandom = MakeRandom.Full30(struct
 
 (* Now we check that [Random] and [FakeRandom] behave indeed the same. *)
 
-SameBits.run
+SameBits.run_on_full
   "std"  (module Random)
   "fake" (module FakeRandom)

@@ -12,9 +12,20 @@ let prec_time =
 let prec_iterations =
   1 + int_of_float (ceil (log10 (float_of_int iterations_limit)))
 
-(* Test one function *)
+type test_case =
+    TestCase :
+      string
+      * (Format.formatter -> 'a -> unit)
+      * string
+      * (unit -> 'a)
+      * string
+      * (unit -> 'a)
+      -> test_case
 
-let test_function name pp r_name (r : unit -> 'a) s_name (s : unit -> 'a) =
+let make_test_case ~name ~pp r_name r s_name s =
+  TestCase (name, pp, r_name, r, s_name, s)
+
+let run_test_case (TestCase (name, pp, r_name, r, s_name, s)) =
 
   let begin_time = Sys.time () in (* not real time but portable *)
 
@@ -62,135 +73,160 @@ let test_function name pp r_name (r : unit -> 'a) s_name (s : unit -> 'a) =
 
   test_all 0. 1
 
-(* Test several functions *)
-
-type function_ =
-    F :
-      string
-      * (Format.formatter -> 'a -> unit)
-      * (unit -> 'a)
-      * (unit -> 'a)
-      -> function_
-
-let test_functions r_name s_name (functions : function_ list) =
+let run_test_cases (test_cases : test_case list) =
   epf "  %*s  %*s@."
     (4 + prec_time) "time"
     prec_iterations "#iter";
+  List.iter run_test_case test_cases
 
-  List.iter
-    (fun (F (name, pp, r, s)) ->
-       test_function name pp r_name r s_name s)
-    functions
+let run_test_case test_case =
+  run_test_cases [test_case]
 
 module type BASIC = MakeRandom.Sig.Basic
 module type FULL = MakeRandom.Sig.Full
 
-let functions_of_basic (module R : BASIC) (module S : BASIC) =
+let test_cases_of_basic r_name (module R : BASIC) s_name (module S : BASIC) =
   [
-    F (
+    TestCase (
       "bits",
       (fun fmt -> fpf fmt "0x%x"),
+      r_name,
       (fun () -> R.bits ()),
+      s_name,
       (fun () -> S.bits ())
     );
-    F (
+    TestCase (
       "int",
       (fun fmt -> fpf fmt "0x%x"),
+      r_name,
       (fun () -> R.int (1 lsl 30 - 1)),
+      s_name,
       (fun () -> S.int (1 lsl 30 - 1))
     );
-    F (
+    TestCase (
       "int32",
       (fun fmt -> fpf fmt "0x%lx"),
+      r_name,
       (fun () -> R.int32 Int32.max_int),
+      s_name,
       (fun () -> S.int32 Int32.max_int)
     );
-    F (
+    TestCase (
       "int64",
       (fun fmt -> fpf fmt "0x%Lx"),
+      r_name,
       (fun () -> R.int64 Int64.max_int),
+      s_name,
       (fun () -> S.int64 Int64.max_int)
     );
-    F (
+    TestCase (
       "nativeint",
       (fun fmt -> fpf fmt "0x%nx"),
+      r_name,
       (fun () -> R.nativeint Nativeint.max_int),
+      s_name,
       (fun () -> S.nativeint Nativeint.max_int)
     );
-    F (
+    TestCase (
       "float",
       Format.pp_print_float,
+      r_name,
       (fun () -> R.float 1.),
+      s_name,
       (fun () -> S.float 1.)
     );
-    F (
+    TestCase (
       "bool",
       Format.pp_print_bool,
+      r_name,
       (fun () -> R.bool ()),
+      s_name,
       (fun () -> S.bool ())
     );
   ]
 
 type state = S : (module FULL with type State.t = 'a) * 'a -> state
 
-let functions_of_state (S ((module R), r_state)) (S ((module S), s_state)) =
+let test_cases_of_state r_name (S ((module R), r_state)) s_name (S ((module S), s_state)) =
   [
-    F (
+    TestCase (
       "State.bits",
       (fun fmt -> fpf fmt "0x%x"),
+      r_name,
       (fun () -> R.State.bits r_state),
+      s_name,
       (fun () -> S.State.bits s_state)
     );
-    F (
+    TestCase (
       "State.int",
       (fun fmt -> fpf fmt "0x%x"),
+      r_name,
       (fun () -> R.State.int r_state (1 lsl 30 - 1)),
+      s_name,
       (fun () -> S.State.int s_state (1 lsl 30 - 1))
     );
-    F (
+    TestCase (
       "State.int32",
       (fun fmt -> fpf fmt "0x%lx"),
+      r_name,
       (fun () -> R.State.int32 r_state Int32.max_int),
+      s_name,
       (fun () -> S.State.int32 s_state Int32.max_int)
     );
-    F (
+    TestCase (
       "State.int64",
       (fun fmt -> fpf fmt "0x%Lx"),
+      r_name,
       (fun () -> R.State.int64 r_state Int64.max_int),
+      s_name,
       (fun () -> S.State.int64 s_state Int64.max_int)
     );
-    F (
+    TestCase (
       "State.nativeint",
       (fun fmt -> fpf fmt "0x%nx"),
+      r_name,
       (fun () -> R.State.nativeint r_state Nativeint.max_int),
+      s_name,
       (fun () -> S.State.nativeint s_state Nativeint.max_int)
     );
-    F (
+    TestCase (
       "State.float",
       Format.pp_print_float,
+      r_name,
       (fun () -> R.State.float r_state 1.),
+      s_name,
       (fun () -> S.State.float s_state 1.)
     );
-    F (
+    TestCase (
       "State.bool",
       Format.pp_print_bool,
+      r_name,
       (fun () -> R.State.bool r_state),
+      s_name,
       (fun () -> S.State.bool s_state)
     );
   ]
 
-let run
-    r_name (module R : FULL)
-    s_name (module S : FULL)
-  =
+let print_header () =
   epf "========== [ SameBits ] ==========@\n@.";
   epf "time limit: %.2fs@." time_limit;
   epf "iterations limit: %d@." iterations_limit;
   epf "batch size: %d@." batch_size;
-  epf "@.";
+  epf "refresh frequency: %fs@." refresh_frequency;
+  epf "@."
+
+let run_on_basic r_name (module R : BASIC) s_name (module S : BASIC) =
+  print_header ();
 
   epf "basic tests:@.";
-  test_functions r_name s_name (functions_of_basic (module R) (module S));
+  run_test_cases (test_cases_of_basic r_name (module R) s_name (module S));
+  epf "@."
+
+let run_on_full r_name (module R : FULL) s_name (module S : FULL) =
+  print_header ();
+
+  epf "basic tests:@.";
+  run_test_cases (test_cases_of_basic r_name (module R) s_name (module S));
   epf "@.";
 
   epf "(saving current state for further tests)@.@.";
@@ -200,27 +236,27 @@ let run
   epf "after re-initialisation with `init`:@.";
   R.init 566631242;
   S.init 566631242;
-  test_functions r_name s_name (functions_of_basic (module R) (module S));
+  run_test_cases (test_cases_of_basic r_name (module R) s_name (module S));
   epf "@.";
 
   epf "after re-initialisation with `full_init`:@.";
   R.full_init [| 566631242; 1112354; 99999999; 0; 12 |];
   S.full_init [| 566631242; 1112354; 99999999; 0; 12 |];
-  test_functions r_name s_name (functions_of_basic (module R) (module S));
+  run_test_cases (test_cases_of_basic r_name (module R) s_name (module S));
   epf "@.";
 
   epf "after loading previously-saved state:@.";
   R.set_state r_state;
   S.set_state s_state;
-  test_functions r_name s_name (functions_of_basic (module R) (module S));
+  run_test_cases (test_cases_of_basic r_name (module R) s_name (module S));
   epf "@.";
 
-  epf "still using that same state:@.";
-  test_functions r_name s_name (functions_of_state (S ((module R), r_state)) (S ((module S), s_state)));
+  epf "still using the same state:@.";
+  run_test_cases (test_cases_of_state r_name (S ((module R), r_state)) s_name (S ((module S), s_state)));
   epf "@.";
 
   epf "using a newly-created state:@.";
   let r_state = R.State.make [| 555789242; 1245788956; 1111111; 0; 7 |] in
   let s_state = S.State.make [| 555789242; 1245788956; 1111111; 0; 7 |] in
-  test_functions r_name s_name (functions_of_state (S ((module R), r_state)) (S ((module S), s_state)));
+  run_test_cases (test_cases_of_state r_name (S ((module R), r_state)) s_name (S ((module S), s_state)));
   epf "@."
