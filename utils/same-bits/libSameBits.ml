@@ -25,7 +25,7 @@ type test_case =
 let make_test_case ~name ~pp r_name r s_name s =
   TestCase (name, pp, r_name, r, s_name, s)
 
-let run_test_case (TestCase (name, pp, r_name, r, s_name, s)) =
+let run_test_case ?(name_length=0) (TestCase (name, pp, r_name, r, s_name, s)) =
 
   let begin_time = Sys.time () in (* not real time but portable *)
 
@@ -53,14 +53,18 @@ let run_test_case (TestCase (name, pp, r_name, r, s_name, s)) =
     let curr_time = Sys.time () in
     let time_spent = curr_time -. begin_time in
     if time_spent > time_limit || nb > iterations_limit then
-      (     epf "\r  %*.2fs  %*d  %s  OK!@."
-              prec_time (Sys.time () -. begin_time)
-              prec_iterations (nb - 1)
-              name
+      (
+        epf "\r  %*.2fs  %*d  %*s  OK!@."
+          prec_time time_spent
+          prec_iterations (nb - 1)
+          name_length name
       )
     else if curr_time > last_refresh +. refresh_frequency then
       (
-        epf "\r  %*.2fs  %*d  %s@?" prec_time time_spent prec_iterations nb name;
+        epf "\r  %*.2fs  %*d  %*s@?"
+          prec_time time_spent
+          prec_iterations nb
+          name_length name;
         let nb = test_batch batch_size nb in
         test_all curr_time nb
       )
@@ -73,11 +77,18 @@ let run_test_case (TestCase (name, pp, r_name, r, s_name, s)) =
 
   test_all 0. 1
 
+let max_name_length =
+  List.fold_left
+    (fun name_length (TestCase (name, _, _, _, _, _)) ->
+       max name_length (String.length name)) 0
+
 let run_test_cases (test_cases : test_case list) =
-  epf "  %*s  %*s@."
+  let name_length = max 4 (max_name_length test_cases) in
+  epf "  %*s  %*s  %*s@."
     (4 + prec_time) "time"
-    prec_iterations "#iter";
-  List.iter run_test_case test_cases
+    prec_iterations "#iter"
+    name_length "name";
+  List.iter (run_test_case ~name_length) test_cases
 
 let run_test_case test_case =
   run_test_cases [test_case]
