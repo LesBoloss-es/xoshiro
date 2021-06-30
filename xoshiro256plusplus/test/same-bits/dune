@@ -1,4 +1,4 @@
 (tests
- (names sameBits)
+ (names sameBits sameBitsLL)
  (package xoshiro)
- (libraries sameBits xoshiro.256++.pure xoshiro.256++.bindings))
+ (libraries libSameBits xoshiro.256++.pure xoshiro.256++.bindings))
