@@ -267,7 +267,7 @@ let run_on_full r_name (module R : FULL) s_name (module S : FULL) =
   epf "@.";
 
   epf "using a newly-created state:@.";
-  let r_state = R.State.make [| 555789242; 1245788956; 1111111; 0; 7 |] in
-  let s_state = S.State.make [| 555789242; 1245788956; 1111111; 0; 7 |] in
+  let r_state = R.State.make [| 555789242; 245788956; 1111111; 0; 7 |] in
+  let s_state = S.State.make [| 555789242; 245788956; 1111111; 0; 7 |] in
   run_test_cases (test_cases_of_state r_name (S ((module R), r_state)) s_name (S ((module S), s_state)));
   epf "@."
