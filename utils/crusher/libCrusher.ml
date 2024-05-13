@@ -22,6 +22,9 @@ let set_verbosity lvl =
     (* | "quiet" -> Quiet *)
     | _ -> raise (Arg.Bad (Format.sprintf "Unknown verbosity level: %s" lvl))
 
+let default_suspectp = Probdist.Gofw.get_suspectp ()
+let suspectp = ref default_suspectp
+
 let ustring setter value =
   Arg.Unit (fun () -> setter value)
 
@@ -31,6 +34,8 @@ let spec =
     "--smallcrush", ustring set_battery "smallcrush", " Alias for --battery=smallcrush";
     "--crush",      ustring set_battery "crush",      " Alias for --battery=crush";
     "--bigcrush",   ustring set_battery "bigcrush",   " Alias for --battery=bigcrush";
+
+    "--suspectp",  Set_float suspectp, (Format.sprintf "PVAL Sets suspect p-value (default: %f)" default_suspectp);
 
     "--verbosity", String set_verbosity, "LVL Sets verbosity level (default: summary)";
     "--verbose",   ustring set_verbosity "verbose", " Alias for --verbosity=verbose";
@@ -55,6 +60,9 @@ let set_testu01_verbosity () =
   match !verbosity with
   | Summary -> Swrite.set_basic false
   | _ -> ()
+
+let set_suspectp () =
+  Probdist.Gofw.set_suspectp !suspectp
 
 let run_battery_on gen =
   match !battery with
@@ -83,6 +91,7 @@ let check_suspect_p_values_and_die () =
 let run ~name bits =
   parse_arguments ();
   set_testu01_verbosity ();
+  set_suspectp ();
   let gen = Unif01.create_extern_gen_bits name bits in
   run_battery_on gen;
   collect_suspect_p_values ();
