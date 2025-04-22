@@ -51,7 +51,7 @@ let print_header test_name =
     (String.make left '=') test_name (String.make right '=')
 
 let run_test basic_gen_to_test full_gen_to_test =
-  Core.Command.run @@ Core_bench.Bench.make_command (
+  Command_unix.run @@ Core_bench.Bench.make_command (
     List.concat_map
       (fun (name, gen) ->
          match gen with

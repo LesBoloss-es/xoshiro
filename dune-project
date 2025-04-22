@@ -21,7 +21,13 @@
  (synopsis "Helper to build a module similar to Stdlib.Random")
  (description "This package provides helpers to build a module similar to the
   Random module of the standard library, by providing only a minimum amount of
-  things (in the simplest case, only a `val bits : unit -> int` function)."))
+  things (in the simplest case, only a `val bits : unit -> int` function).")
+
+  (depends
+  ocaml
+  dune
+  (odoc :with-doc)))
+
 
 (package
  (name xoshiro)
